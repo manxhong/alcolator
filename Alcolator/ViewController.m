@@ -8,27 +8,107 @@
 
 #import "ViewController.h"
 
-@interface ViewController ()
+@interface ViewController () <UITextFieldDelegate>
 
-@property (weak, nonatomic) IBOutlet UITextField *beerPercentTextField;
-@property (weak, nonatomic) IBOutlet UISlider *beerCountSlider;
-@property (weak, nonatomic) IBOutlet UILabel *resultLabel;
-@property (weak, nonatomic) IBOutlet UILabel *numberOfBeer;
+@property (weak, nonatomic) UIButton *calculateButton;
+@property (weak, nonatomic) UITapGestureRecognizer *hideKeyboardTapGestureRecognizer;
 
 @end
 
 @implementation ViewController
 
+- (void)loadView {
+    //Allocate and initialize the all-encompassing view
+    self.view = [[UIView alloc] init];
+    //Allocate and initialize each of our views and the gesture recognizer
+    UITextField *textField = [[UITextField alloc] init];
+    UISlider *slider =[[UISlider alloc]init];
+    UILabel *label = [[UILabel alloc]init];
+    UILabel *beerlabel = [[UILabel alloc]init];
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc]init];
+    
+    //add each view and the gesture recognizer as the view's subviews
+    [self.view addSubview:textField];
+    [self.view addSubview:slider];
+    [self.view addSubview:label];
+    [self.view addSubview:beerlabel];
+    [self.view addSubview:button];
+    [self.view addGestureRecognizer:tap];
+    
+    //Assign the views and gesture recognizer to our properties
+    self.beerPercentTextField = textField;
+    self.beerCountSlider = slider;
+    self.resultLabel = label;
+    self.numberOfBeer = beerlabel;
+    self. calculateButton = button;
+    self.hideKeyboardTapGestureRecognizer = tap;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
+    // Calls the superclass's implementation
+
+    //Set our primary view's background color to lightGrayColor
+    self.view.backgroundColor = [UIColor lightGrayColor];
+    
+    self.resultLabel.backgroundColor = [UIColor blueColor];
+    //Tells the text field that 'self', this instance of 'BLCViewController' should be treated as the text field's delegate
+    self.beerPercentTextField.delegate  = self;
+    
+    //Set the placeholder text
+    self.beerPercentTextField.placeholder = NSLocalizedString(@"% Alcohol Content Per Beer", @"Beer percent placeholder text");
+    
+    //Tells 'self.beerCountSlider' that when its value changes, it should call '[self -sliderValueDidChange:]'.
+    //This is equivalent to connecting the IBAction in our previous checkpoint
+    [self.beerCountSlider addTarget:self action:@selector(sliderValueDidChange:) forControlEvents:UIControlEventValueChanged];
+    
+    //set the minimum and maximum number of beers
+    self.beerCountSlider.minimumValue = 1;
+    self.beerCountSlider.maximumValue = 10;
+    
+    //Tells 'self.calculateButton' that when a finger is lifted from the button while still inside its bounds, to call '[self -buttonPressed:]'
+    [self.calculateButton addTarget:self action:@selector(buttonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    
+    //Set the title of the button
+    [self.calculateButton  setTitle:NSLocalizedString(@"Calculate", @"Calculate command" ) forState:UIControlStateNormal];
+    
+    //Tells the tap gesture recognizer to call '[self -tapGestureDidFire:]' when it detects a tao.
+    [self.hideKeyboardTapGestureRecognizer addTarget:self action:@selector(tapGestureDidFire:)];
+    
+    self.numberOfBeer.numberOfLines=0;
+    //Get rid of the maximum number of lines on the label
+    self.resultLabel.numberOfLines = 0;
+}
+
+-(void) viewWillLayoutSubviews {
+    [super viewWillLayoutSubviews];
+    CGFloat viewWidth = self.view.frame.size.width;
+    CGFloat padding =20;
+    CGFloat itemWidth= viewWidth - padding - padding;
+    CGFloat itemHeight = 44;
+    
+    self.beerPercentTextField.frame = CGRectMake(padding, padding, itemWidth, itemHeight);
+    
+    CGFloat bottomOfTextField = CGRectGetMaxY(self.beerPercentTextField.frame);
+    self.beerCountSlider.frame = CGRectMake(padding, bottomOfTextField + padding, itemWidth, itemHeight);
+    
+    CGFloat bottomOfSlider = CGRectGetMaxY(self.beerCountSlider.frame);
+    self.numberOfBeer.frame = CGRectMake(padding, bottomOfSlider +padding, itemWidth, itemHeight);
+    
+    CGFloat bottomOfNumberOfBeer = CGRectGetMaxY(self.numberOfBeer.frame);
+    self.resultLabel.frame = CGRectMake(padding, bottomOfNumberOfBeer + padding, itemWidth, itemHeight * 4);
+    
+    CGFloat bottomOfLabel = CGRectGetMaxY(self.resultLabel.frame);
+    self.calculateButton.frame = CGRectMake(padding, bottomOfLabel + padding, itemWidth, itemHeight);
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-- (IBAction)textFieldDidChange:(UITextField *)sender {
+- (void)textFieldDidChange:(UITextField *)sender {
     NSString *enteredText = sender.text;
     float enteredNumber = [enteredText floatValue];
     
@@ -36,7 +116,7 @@
         sender.text = nil;
     }
 }
-- (IBAction)sliderValueDidChange:(UISlider *)sender {
+- (void)sliderValueDidChange:(UISlider *)sender {
     NSLog(@"Slider value changed to %f", sender.value);
     
     [self.beerPercentTextField resignFirstResponder];
@@ -44,7 +124,7 @@
     self.numberOfBeer.text=numOfBeer;
     
 }
-- (IBAction)buttonPressed:(UIButton *)sender {
+- (void)buttonPressed:(UIButton *)sender {
     [self.beerPercentTextField resignFirstResponder];
     int numberOfBeers = self.beerCountSlider.value;
     int ouncesInOneBeerGlass = 12;
@@ -71,7 +151,7 @@
     NSString *resultText = [NSString stringWithFormat:NSLocalizedString(@"%d %@ contains as much alcohol as %.lf %@ of wine.", nil), numberOfBeers, beerText, numberOfWineGlassesForEquivalentAlcoholAmount, wineText];
     self.resultLabel.text= resultText;
 }
-- (IBAction)tapGestureDidFire:(UITapGestureRecognizer *)sender {
+- (void)tapGestureDidFire:(UITapGestureRecognizer *)sender {
     [self.beerPercentTextField resignFirstResponder];
 }
 
