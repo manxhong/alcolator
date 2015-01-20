@@ -14,6 +14,11 @@
 
 @implementation WhiskeyViewController
 
+-(void) viewDidLoad {
+    [super viewDidLoad];
+    self.title = NSLocalizedString(@"Whiskey", @"whiskey");
+}
+
 - (void)buttonPressed:(UIButton *)sender;
 {
     [self.beerPercentTextField resignFirstResponder];
@@ -49,6 +54,7 @@
     
     NSString *resultText = [NSString stringWithFormat:NSLocalizedString(@"%d %@ contains as much alcohol as %.1f %@ of whiskey.", nil), numberOfBeers, beerText, numberOfWhiskeyGlassesForEquivalentAlcoholAmount, whiskeyText];
     self.resultLabel.text = resultText;
+    self.title = [NSString stringWithFormat:@"%f whiskey shot",numberOfWhiskeyGlassesForEquivalentAlcoholAmount];
 }
 
 @end

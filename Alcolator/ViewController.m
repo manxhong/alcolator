@@ -47,6 +47,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    self.title = NSLocalizedString(@"Wine", @"wine");
     // Do any additional setup after loading the view, typically from a nib.
     // Calls the superclass's implementation
 
@@ -89,7 +91,7 @@
     CGFloat itemWidth= viewWidth - padding - padding;
     CGFloat itemHeight = 44;
     
-    self.beerPercentTextField.frame = CGRectMake(padding, padding, itemWidth, itemHeight);
+    self.beerPercentTextField.frame = CGRectMake(padding, padding+40, itemWidth, itemHeight);
     
     CGFloat bottomOfTextField = CGRectGetMaxY(self.beerPercentTextField.frame);
     self.beerCountSlider.frame = CGRectMake(padding, bottomOfTextField + padding, itemWidth, itemHeight);
@@ -122,8 +124,8 @@
     [self.beerPercentTextField resignFirstResponder];
     NSString *numOfBeer= [NSString stringWithFormat:NSLocalizedString(@"%f", nil), sender.value];
     self.numberOfBeer.text=numOfBeer;
+    }
     
-}
 - (void)buttonPressed:(UIButton *)sender {
     [self.beerPercentTextField resignFirstResponder];
     int numberOfBeers = self.beerCountSlider.value;
