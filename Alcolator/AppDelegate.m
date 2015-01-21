@@ -8,13 +8,15 @@
 
 #import "AppDelegate.h"
 #import "ViewController.h"
-#import "MainMenuViewController.h"
+#import "WhiskeyViewController.h"
 
-@interface AppDelegate ()
-
+@interface AppDelegate () <UITabBarControllerDelegate>
+@property (nonatomic, assign) UITabBarController *tabBarController;
 @end
 
 @implementation AppDelegate
+
+
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
@@ -23,11 +25,22 @@
     
     //ViewController *viewController = [[ViewController alloc] init];
     //self.window.rootViewController = viewController;
-    MainMenuViewController *mainMenuViewController = [[MainMenuViewController alloc]init];
-    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:mainMenuViewController];
-    self.window.rootViewController = navigationController;
+    //MainMenuViewController *mainMenuViewController = [[MainMenuViewController alloc]init];
+    //UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:mainMenuViewController];
+    //self.window.rootViewController = navigationController;
+    ViewController *wineVC = [[ViewController alloc]init];
+    WhiskeyViewController *whiskeyVC= [[WhiskeyViewController alloc]init];
+    UITabBarController *tabBarVC = [[UITabBarController alloc]init];
+    tabBarVC.delegate = self;
+    tabBarVC.viewControllers = @[wineVC, whiskeyVC];
+    
+    self.window.rootViewController = tabBarVC;
     [self.window makeKeyAndVisible];
     return YES;
+}
+
+-(void) tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController  {
+    NSLog(@"New view controller selected:%@",viewController.title);
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
