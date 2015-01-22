@@ -17,6 +17,18 @@
 
 @implementation ViewController
 
+-(instancetype) init {
+    self = [super init];
+    
+    if (self) {
+        self.title = NSLocalizedString(@"Wine", @"wine");
+        
+        //Since we don't have icons, let's move the title to the middle of the tab bar
+        [self.tabBarItem setTitlePositionAdjustment:UIOffsetMake(0, -18)];
+    }
+    return self;
+}
+
 - (void)loadView {
     //Allocate and initialize the all-encompassing view
     self.view = [[UIView alloc] init];
@@ -48,7 +60,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.title = NSLocalizedString(@"Wine", @"wine");
+    self.view.backgroundColor = [UIColor colorWithRed:0.741 green:0.925 blue:0.714 alpha:1]; /*#bdecb6*/
+    //self.title = NSLocalizedString(@"Wine", @"wine");
     // Do any additional setup after loading the view, typically from a nib.
     // Calls the superclass's implementation
 
@@ -89,24 +102,47 @@
 
 -(void) viewWillLayoutSubviews {
     [super viewWillLayoutSubviews];
-    CGFloat viewWidth = self.view.frame.size.width;
-    CGFloat padding =20;
-    CGFloat itemWidth= viewWidth - padding - padding;
-    CGFloat itemHeight = 44;
-    
-    self.beerPercentTextField.frame = CGRectMake(padding, padding+40, itemWidth, itemHeight);
-    
-    CGFloat bottomOfTextField = CGRectGetMaxY(self.beerPercentTextField.frame);
-    self.beerCountSlider.frame = CGRectMake(padding, bottomOfTextField + padding, itemWidth, itemHeight);
-    
-    CGFloat bottomOfSlider = CGRectGetMaxY(self.beerCountSlider.frame);
-    self.numberOfBeer.frame = CGRectMake(padding, bottomOfSlider +padding, itemWidth, itemHeight);
-    
-    CGFloat bottomOfNumberOfBeer = CGRectGetMaxY(self.numberOfBeer.frame);
-    self.resultLabel.frame = CGRectMake(padding, bottomOfNumberOfBeer + padding, itemWidth, itemHeight * 4);
-    
-    CGFloat bottomOfLabel = CGRectGetMaxY(self.resultLabel.frame);
-    self.calculateButton.frame = CGRectMake(padding, bottomOfLabel + padding, itemWidth, itemHeight);
+    if (UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation))
+    {
+        CGFloat viewWidth = self.view.frame.size.width;
+        CGFloat padding =10;
+        CGFloat itemWidth= viewWidth - padding - padding;
+        CGFloat itemHeight = 44;
+        
+        self.beerPercentTextField.frame = CGRectMake(padding, padding, itemWidth, itemHeight);
+        
+        CGFloat bottomOfTextField = CGRectGetMaxY(self.beerPercentTextField.frame);
+        self.beerCountSlider.frame = CGRectMake(padding, bottomOfTextField + padding, itemWidth, itemHeight);
+        
+        CGFloat bottomOfSlider = CGRectGetMaxY(self.beerCountSlider.frame);
+        self.numberOfBeer.frame = CGRectMake(padding, bottomOfSlider +padding, itemWidth, itemHeight);
+        
+        CGFloat bottomOfNumberOfBeer = CGRectGetMaxY(self.numberOfBeer.frame);
+        self.resultLabel.frame = CGRectMake(padding, bottomOfNumberOfBeer + padding, itemWidth, itemHeight * 2);
+        
+        CGFloat bottomOfLabel = CGRectGetMaxY(self.resultLabel.frame);
+        self.calculateButton.frame = CGRectMake(padding, bottomOfLabel, itemWidth, itemHeight);
+    }
+    else{
+        CGFloat viewWidth = self.view.frame.size.width;
+        CGFloat padding =20;
+        CGFloat itemWidth= viewWidth - padding - padding;
+        CGFloat itemHeight = 44;
+        
+        self.beerPercentTextField.frame = CGRectMake(padding, padding+40, itemWidth, itemHeight);
+        
+        CGFloat bottomOfTextField = CGRectGetMaxY(self.beerPercentTextField.frame);
+        self.beerCountSlider.frame = CGRectMake(padding, bottomOfTextField + padding, itemWidth, itemHeight);
+        
+        CGFloat bottomOfSlider = CGRectGetMaxY(self.beerCountSlider.frame);
+        self.numberOfBeer.frame = CGRectMake(padding, bottomOfSlider +padding, itemWidth, itemHeight);
+        
+        CGFloat bottomOfNumberOfBeer = CGRectGetMaxY(self.numberOfBeer.frame);
+        self.resultLabel.frame = CGRectMake(padding, bottomOfNumberOfBeer + padding, itemWidth, itemHeight * 4);
+        
+        CGFloat bottomOfLabel = CGRectGetMaxY(self.resultLabel.frame);
+        self.calculateButton.frame = CGRectMake(padding, bottomOfLabel + padding, itemWidth, itemHeight);
+  }
 }
 
 - (void)didReceiveMemoryWarning {
@@ -126,15 +162,28 @@
     NSLog(@"Slider value changed to %f", sender.value);
     
     [self.beerPercentTextField resignFirstResponder];
-    NSString *numOfBeer= [NSString stringWithFormat:NSLocalizedString(@"%f", nil), sender.value];
-    self.numberOfBeer.text=numOfBeer;
     
-//    Wine (123 glasses)
+//    NSString *numOfBeer= [NSString stringWithFormat:NSLocalizedString(@"%f", nil), sender.value];
+//    self.numberOfBeer.text=numOfBeer;
     
-    self.navigationItem.title = [NSString stringWithFormat:@"%@ (%f %@)",self.nameOfBeverage, sender.value,self.nameOfContainer];
+//    self.navigationItem.title = [NSString stringWithFormat:@"%@ (%f %@)",self.nameOfBeverage, sender.value,self.nameOfContainer];
     
+    
+    int numberOfBeers = self.beerCountSlider.value;
+    int ouncesInOneBeerGlass = 12;
+    
+    float alcoholPercentageOfBeer = [self.beerPercentTextField.text floatValue]/100;
+    float ouncesOfAlcoholPerBeer = ouncesInOneBeerGlass * alcoholPercentageOfBeer;
+    float ouncesOfAlcoholTotal= ouncesOfAlcoholPerBeer * numberOfBeers;
+    float ouncesInOneWineGlass=5;
+    float alcoholPercentageOfWine=0.13;
+    float ouncesOfAlcoholPerWineGlass = ouncesInOneWineGlass * alcoholPercentageOfWine;
+    float numberOfWineGlassesForEquivalentAlcoholAmount = ouncesOfAlcoholTotal/ouncesOfAlcoholPerWineGlass;
+    NSString *numOfGlasses= [NSString stringWithFormat:NSLocalizedString(@"%f glasses", nil), numberOfWineGlassesForEquivalentAlcoholAmount];
+    self.numberOfBeer.text=numOfGlasses;
     
 }
+
     
 - (void)buttonPressed:(UIButton *)sender {
     [self.beerPercentTextField resignFirstResponder];
@@ -162,7 +211,9 @@
     }
     NSString *resultText = [NSString stringWithFormat:NSLocalizedString(@"%d %@ contains as much alcohol as %.lf %@ of wine.", nil), numberOfBeers, beerText, numberOfWineGlassesForEquivalentAlcoholAmount, wineText];
     self.resultLabel.text= resultText;
+  
 }
+
 - (void)tapGestureDidFire:(UITapGestureRecognizer *)sender {
     [self.beerPercentTextField resignFirstResponder];
 }

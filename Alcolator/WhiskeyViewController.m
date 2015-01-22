@@ -14,11 +14,46 @@
 
 @implementation WhiskeyViewController
 
+-(instancetype) init {
+    self = [super init];
+    
+    if (self) {
+        self.title = NSLocalizedString(@"Whiskey", @"whiskey");
+    }
+    return self;
+}
+
 -(void) viewDidLoad {
     [super viewDidLoad];
-    self.title = NSLocalizedString(@"Whiskey", @"whiskey");
-    self.nameOfBeverage = @"Whiskey";
-    self.nameOfContainer = @"Shots";
+
+//    self.title = NSLocalizedString(@"Whiskey", @"whiskey");
+//    self.nameOfBeverage = @"Whiskey";
+//    self.nameOfContainer = @"Shots";
+
+    self.view.backgroundColor = [UIColor colorWithRed:0.992 green:0.992 blue:0.588 alpha:1]; /*fdfd96*/
+    //self.title = NSLocalizedString(@"Whiskey", @"whiskey");
+}
+
+- (void)sliderValueDidChange:(UISlider *)sender {
+    NSLog(@"Slider value changed to %f", sender.value);
+    
+    [self.beerPercentTextField resignFirstResponder];
+    int numberOfBeers = self.beerCountSlider.value;
+    int ouncesInOneBeerGlass = 12;  //assume they are 12oz beer bottles
+    
+    float alcoholPercentageOfBeer = [self.beerPercentTextField.text floatValue] / 100;
+    float ouncesOfAlcoholPerBeer = ouncesInOneBeerGlass * alcoholPercentageOfBeer;
+    float ouncesOfAlcoholTotal = ouncesOfAlcoholPerBeer * numberOfBeers;
+    
+    float ouncesInOneWhiskeyGlass = 1;  // a 1oz shot
+    float alcoholPercentageOfWhiskey = 0.4;  // 40% is average
+    
+    float ouncesOfAlcoholPerWhiskeyGlass = ouncesInOneWhiskeyGlass * alcoholPercentageOfWhiskey;
+    float numberOfWhiskeyGlassesForEquivalentAlcoholAmount = ouncesOfAlcoholTotal / ouncesOfAlcoholPerWhiskeyGlass;
+    NSString *numOfShots= [NSString stringWithFormat:NSLocalizedString(@"%f shots", nil), numberOfWhiskeyGlassesForEquivalentAlcoholAmount];
+    self.numberOfBeer.text=numOfShots;
+    
+//>>>>>>> dbc596fa0aa8e38f312c6d9fd33afa0047b1eee4
 }
 
 - (void)buttonPressed:(UIButton *)sender;

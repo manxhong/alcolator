@@ -59,11 +59,13 @@
 }
 
 -(void) winePressed: (UIButton *)sender{
+    NSLog(@"New view controller selected: Wine");
     ViewController * wineVC= [[ViewController alloc]init];
     [self.navigationController pushViewController:wineVC animated:YES];
 }
 
 -(void) whiskeyPressed: (UIButton*) sender {
+    NSLog(@"New view controller selected Whiskey");
     WhiskeyViewController *whiskeyVC = [[WhiskeyViewController alloc]init];
     [self.navigationController pushViewController:whiskeyVC animated:YES];
 }
