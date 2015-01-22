@@ -82,6 +82,9 @@
     self.numberOfBeer.numberOfLines=0;
     //Get rid of the maximum number of lines on the label
     self.resultLabel.numberOfLines = 0;
+    
+    self.nameOfBeverage = @"Wine";
+    self.nameOfContainer = @"Glasses";
 }
 
 -(void) viewWillLayoutSubviews {
@@ -118,13 +121,20 @@
         sender.text = nil;
     }
 }
+
 - (void)sliderValueDidChange:(UISlider *)sender {
     NSLog(@"Slider value changed to %f", sender.value);
     
     [self.beerPercentTextField resignFirstResponder];
     NSString *numOfBeer= [NSString stringWithFormat:NSLocalizedString(@"%f", nil), sender.value];
     self.numberOfBeer.text=numOfBeer;
-    }
+    
+//    Wine (123 glasses)
+    
+    self.navigationItem.title = [NSString stringWithFormat:@"%@ (%f %@)",self.nameOfBeverage, sender.value,self.nameOfContainer];
+    
+    
+}
     
 - (void)buttonPressed:(UIButton *)sender {
     [self.beerPercentTextField resignFirstResponder];

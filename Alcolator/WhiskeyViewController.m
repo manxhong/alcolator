@@ -17,6 +17,8 @@
 -(void) viewDidLoad {
     [super viewDidLoad];
     self.title = NSLocalizedString(@"Whiskey", @"whiskey");
+    self.nameOfBeverage = @"Whiskey";
+    self.nameOfContainer = @"Shots";
 }
 
 - (void)buttonPressed:(UIButton *)sender;

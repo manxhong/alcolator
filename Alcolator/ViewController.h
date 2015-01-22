@@ -14,6 +14,8 @@
 @property (weak, nonatomic) UISlider *beerCountSlider;
 @property (weak, nonatomic) UILabel *resultLabel;
 @property (weak, nonatomic) UILabel *numberOfBeer;
+@property (strong, nonatomic) NSString *nameOfBeverage;
+@property (strong, nonatomic) NSString *nameOfContainer;
 
 -(void)buttonPressed:(UIButton *)sender;
 
